@@ -1,0 +1,21 @@
+/* Disable smooth scrolling */
+html {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent horizontal scrolling */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Add proper section spacing */
+section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+/* Add scroll margin for fixed header */
+section[id] {
+  scroll-margin-top: 4rem;
+}
