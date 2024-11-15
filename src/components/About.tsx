@@ -27,7 +27,7 @@ import { StarredHeading } from './HeadingStar';
 import { SectionStars, HeadlineStars } from './BackgroundStars';
 
 // Import photo with correct filename
-const profilePhoto = '/Mubashir-photo.JPG';
+const profilePhoto = process.env.PUBLIC_URL + '/mubashir-photo.jpg';
 
 const profileInfo = [
   {
@@ -541,7 +541,7 @@ const BirthdayCard = () => {
                 animate={{ 
                   x: window.innerWidth / 2 + (Math.random() - 0.5) * 1000,
                   y: window.innerHeight + 20,
-                  rotate: Math.random() * 360 * 4,
+                  rotate: Math.random() * 360,
                   scale: [0, 1, 1, 0]
                 }}
                 transition={{
@@ -779,7 +779,7 @@ const FireworkEffect = () => {
           style={{
             background: 'white',
             borderRadius: '50%',
-            boxShadow: '0 0 4px 2px rgba(255, 255, 255, 0.8)'
+            boxShadow: '0 0 4px 2px rgba(255,255,255,0.5)'
           }}
           initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
           animate={{ 
