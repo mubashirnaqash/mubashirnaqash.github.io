@@ -2,7 +2,7 @@
   "name": "website",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://mubashirfarooq527.github.io/personal-website",
+  "homepage": "https://mubashirnaqash.github.io/personal-website",
   "dependencies": {
     "@heroicons/react": "^1.0.6",
     "@testing-library/jest-dom": "^5.17.0",
