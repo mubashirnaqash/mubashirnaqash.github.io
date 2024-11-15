@@ -1,0 +1,57 @@
+/* Gradient Animation */
+@keyframes gradient-xy {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.animate-gradient-xy {
+  animation: gradient-xy 15s ease infinite;
+  background-size: 400% 400%;
+}
+
+/* Headline Text Animation */
+.headline-text {
+  position: relative;
+  display: inline-block;
+}
+
+.headline-text::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background: linear-gradient(to right, #FF9A8B, #FF6B6B, #FF4D4D);
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.headline-text:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Background Gradient Animation */
+.bg-gradient-radial {
+  background-size: 200% 200%;
+}
+
+.bg-gradient-conic {
+  background-size: 400% 400%;
+}
+
+/* Button Hover Animation */
+.hover-gradient:hover {
+  background-size: 200% 200%;
+  background-position: right center;
+  transition: all 0.5s ease-out;
+}

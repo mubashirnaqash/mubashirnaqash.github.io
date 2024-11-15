@@ -1,13 +1,282 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --scroll-behavior: smooth;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream-50 dark:bg-gray-900 text-gray-800 dark:text-cream-50 transition-colors duration-300;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .heading {
+    @apply text-3xl md:text-4xl font-bold bg-gradient-to-r from-accent-peach via-accent-lavender to-accent-mint bg-clip-text text-transparent mb-4;
+  }
+
+  .subheading {
+    @apply text-lg text-gray-600 dark:text-cream-200;
+  }
+
+  /* Creamy Cards */
+  .cream-card {
+    @apply bg-gradient-to-br from-cream-50 to-cream-100 dark:from-gray-800 dark:to-gray-900
+           rounded-xl shadow-sm hover:shadow-md transition-all duration-300
+           border border-cream-200/50 dark:border-gray-700/50
+           hover:border-cream-300 dark:hover:border-gray-600;
+  }
+
+  /* Blob Shapes */
+  .blob-shape {
+    @apply rounded-blob transition-all duration-700 animate-blob;
+  }
+
+  .blob-shape-alt {
+    @apply rounded-blob-2 transition-all duration-700 animate-blob;
+  }
+
+  /* Floating Elements */
+  .float-element {
+    @apply animate-float;
+  }
+
+  /* Gradient Borders */
+  .gradient-border {
+    @apply relative rounded-2xl p-[2px] bg-gradient-to-r from-accent-peach via-accent-lavender to-accent-mint;
+  }
+
+  .gradient-border-content {
+    @apply relative rounded-2xl bg-cream-50 dark:bg-gray-800 p-6;
+  }
+
+  /* Buttons */
+  .cream-button {
+    @apply px-6 py-3 rounded-xl bg-cream-gradient text-gray-800 shadow-cream hover:shadow-glow 
+           transition-all duration-300 transform hover:-translate-y-1;
+  }
+
+  .cream-button-outline {
+    @apply px-6 py-3 rounded-xl border-2 border-cream-300 text-gray-800 dark:text-cream-50
+           hover:bg-cream-gradient hover:border-transparent hover:shadow-glow 
+           transition-all duration-300 transform hover:-translate-y-1;
+  }
+
+  /* Navigation Links */
+  .nav-link {
+    @apply relative text-gray-700 dark:text-cream-100 hover:text-accent-peach dark:hover:text-accent-mint 
+           transition-colors duration-300;
+  }
+
+  .nav-link::after {
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent-peach to-accent-mint 
+           transition-all duration-300;
+    content: '';
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+}
+
+/* Theme Switch */
+.theme-switch {
+  @apply relative w-14 h-7 rounded-full 
+         bg-gradient-to-r from-cream-200 to-cream-300 dark:from-gray-700 dark:to-gray-800
+         transition-all duration-300 cursor-pointer shadow-inner;
+}
+
+.theme-switch::after {
+  content: '';
+  @apply absolute top-1 left-1 w-5 h-5 rounded-full
+         bg-gradient-to-br from-white to-cream-50 dark:from-cream-100 dark:to-cream-200
+         transition-all duration-300 transform shadow-md;
+}
+
+.dark .theme-switch::after {
+  @apply translate-x-7;
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-cream-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gradient-to-b from-[#FF9A8B] to-[#FF6B6B] rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply from-[#FF6B6B] to-[#FF4D4D];
+}
+
+/* Section Transitions */
+.section-enter {
+  @apply opacity-0 translate-y-4;
+}
+
+.section-enter-active {
+  @apply opacity-100 translate-y-0 transition-all duration-500;
+}
+
+/* Card Hover Effects */
+.hover-card {
+  @apply transform transition-all duration-300 hover:-translate-y-2 hover:shadow-glow;
+}
+
+/* Gradient Text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#FF9A8B] via-[#FF6B6B] to-[#FF4D4D];
+  background-size: 200% auto;
+  animation: gradient 3s linear infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* Image Shapes */
+.image-blob {
+  @apply rounded-blob overflow-hidden transform transition-all duration-700 hover:rounded-blob-2;
+}
+
+/* Container Shapes */
+.shape-container {
+  @apply relative overflow-hidden rounded-3xl bg-cream-gradient dark:bg-gray-800 
+         shadow-cream dark:shadow-none hover:shadow-glow transition-all duration-300;
+}
+
+/* Decorative Elements */
+.decorative-circle {
+  @apply absolute rounded-full bg-gradient-to-br from-accent-peach/20 to-accent-mint/20 
+         blur-2xl opacity-50 animate-float;
+}
+
+/* Form Elements */
+.cream-input {
+  @apply w-full px-4 py-3 rounded-xl bg-cream-50 dark:bg-gray-800 border-2 border-cream-200 
+         dark:border-gray-700 focus:border-accent-mint dark:focus:border-accent-mint 
+         focus:ring-2 focus:ring-accent-mint/20 transition-all duration-300;
+}
+
+.cream-textarea {
+  @apply cream-input resize-none min-h-[120px];
+}
+
+/* Skill Tags */
+.skill-tag {
+  @apply px-4 py-2 rounded-full bg-cream-100 dark:bg-gray-700 text-gray-700 dark:text-cream-100 
+         hover:bg-cream-200 dark:hover:bg-gray-600 transition-colors duration-300;
+}
+
+/* Enhanced ice cream theme animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Headline Animations */
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.headline-gradient {
+  background: linear-gradient(
+    90deg,
+    #FF6B6B 0%,
+    #FFB4A1 25%,
+    #4F46E5 50%,
+    #7C3AED 75%,
+    #FF6B6B 100%
+  );
+  background-size: 200% auto;
+  animation: gradientFlow 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
+/* Headline Container */
+.headline-container {
+  position: relative;
+  overflow: hidden;
+  padding: 2rem 0;
+}
+
+/* Headline Text Shadow */
+.headline-text {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Headline Decorative Elements */
+.headline-decoration {
+  position: absolute;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 9999px;
+  filter: blur(64px);
+  opacity: 0.2;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.headline-decoration-1 {
+  top: -6rem;
+  left: -6rem;
+  background: linear-gradient(135deg, #FF6B6B, #FFB4A1);
+}
+
+.headline-decoration-2 {
+  bottom: -6rem;
+  right: -6rem;
+  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.1) rotate(15deg);
+    opacity: 0.3;
+  }
 }
