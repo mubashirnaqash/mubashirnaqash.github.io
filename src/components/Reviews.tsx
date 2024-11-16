@@ -1,140 +1,217 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { FaQuoteLeft, FaQuoteRight, FaStar } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaHeart, FaStar, FaQuoteLeft, FaQuoteRight } from 'react-icons/fa';
+import { IoSend } from 'react-icons/io5';
 
 interface Review {
-  id: number;
+  id: string;
   name: string;
-  role: string;
-  content: string;
   rating: number;
+  comment: string;
+  date: Date;
 }
 
-const reviews: Review[] = [
-  {
-    id: 1,
-    name: "Dr. Asif Ali Banka",
-    role: "PhD Supervisor, Islamic University of Science and Technology",
-    content: "Mubashir has demonstrated exceptional research capabilities in AI and Machine Learning. His work on medical imaging analysis has been particularly impressive.",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Dr. Shehla Rafiq",
-    role: "Research Collaborator, Healthcare ML Projects",
-    content: "Working together on Machine Learning in Healthcare has been a rewarding experience. Mubashir's innovative approaches and dedication to advancing healthcare through AI are commendable.",
-    rating: 5,
-  },
-];
-
 const Reviews = () => {
-  return (
-    <section id="reviews" className="py-24 bg-cream-50 dark:bg-gray-900 relative overflow-hidden">
-      {/* Animated background gradients */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-indigo-500/20 rounded-full blur-3xl animate-blob" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] translate-x-1/2 translate-y-1/2 bg-gradient-to-br from-blue-500/20 via-teal-500/20 to-emerald-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
-      </div>
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    rating: 5,
+    comment: ''
+  });
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+  const reviewsPerPage = 3;
+  const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newReview: Review = {
+      id: Date.now().toString(),
+      name: formData.name,
+      rating: formData.rating,
+      comment: formData.comment,
+      date: new Date()
+    };
+
+    setReviews(prev => [newReview, ...prev]);
+    setFormData({ name: '', rating: 5, comment: '' });
+    setShowThankYou(true);
+    setTimeout(() => setShowThankYou(false), 3000);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  return (
+    <div className="min-h-screen py-20 bg-white dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="space-y-16"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
         >
-          <div className="text-center relative">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="mb-6"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent pb-2">
-                Reviews & Testimonials
-              </h2>
-              <div className="h-1 w-24 mx-auto bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full" />
-            </motion.div>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              What colleagues and collaborators say about my research and work
-            </p>
-          </div>
-
-          {/* Reviews Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-            {reviews.map((review, index) => (
-              <motion.div
-                key={review.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className="relative flex flex-col h-full group"
-              >
-                {/* Animated gradient border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-gradient-xy" />
-                
-                {/* Card Content */}
-                <div className="relative flex flex-col h-full rounded-2xl bg-white dark:bg-gray-800 p-8">
-                  {/* Quote icon with gradient */}
-                  <div className="absolute -top-5 -left-5">
-                    <div className="relative w-10 h-10">
-                      <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full blur-sm animate-pulse" />
-                      <div className="relative bg-white dark:bg-gray-800 rounded-full p-2">
-                        <FaQuoteLeft className="w-6 h-6 text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Content with enhanced spacing */}
-                  <div className="mt-6 space-y-6">
-                    {/* Rating with animated stars */}
-                    <div className="flex gap-1">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <motion.span
-                          key={i}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: i * 0.1 }}
-                        >
-                          <FaStar className="w-5 h-5 text-yellow-400" />
-                        </motion.span>
-                      ))}
-                    </div>
-
-                    {/* Review text with gradient hover effect */}
-                    <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:via-purple-500 group-hover:to-indigo-500 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-500">
-                      {review.content}
-                    </p>
-
-                    {/* Reviewer info with enhanced styling */}
-                    <div className="pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
-                      <h4 className="text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
-                        {review.name}
-                      </h4>
-                      <p className="text-gray-600 dark:text-gray-400 mt-1">
-                        {review.role}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Bottom quote with gradient */}
-                  <div className="absolute -bottom-5 -right-5">
-                    <div className="relative w-10 h-10">
-                      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full blur-sm animate-pulse" />
-                      <div className="relative bg-white dark:bg-gray-800 rounded-full p-2">
-                        <FaQuoteRight className="w-6 h-6 text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-orbitron bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent mb-4">
+            Reviews
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300">Share your thoughts about my work</p>
         </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Review Form */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative"
+          >
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#4F46E5]/5 via-[#7C3AED]/5 to-[#EC4899]/5" />
+              
+              <div className="relative">
+                <label className="block text-gray-700 dark:text-gray-200 mb-2 font-medium">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div className="relative">
+                <label className="block text-gray-700 dark:text-gray-200 mb-2 font-medium">Rating</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                      className="focus:outline-none"
+                    >
+                      <FaStar
+                        className={`w-8 h-8 ${
+                          star <= formData.rating
+                            ? 'text-yellow-400'
+                            : 'text-gray-300 dark:text-gray-600'
+                        } transition-colors duration-200`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative">
+                <label className="block text-gray-700 dark:text-gray-200 mb-2 font-medium">Comment</label>
+                <textarea
+                  name="comment"
+                  value={formData.comment}
+                  onChange={handleInputChange}
+                  required
+                  rows={4}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white transition-colors duration-200 resize-none"
+                  placeholder="Share your experience..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 px-6 text-white font-medium rounded-lg bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#EC4899] hover:opacity-90 transition-opacity duration-200 flex items-center justify-center gap-2 group"
+              >
+                Submit Review
+                <IoSend className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200" />
+              </button>
+            </form>
+
+            {/* Thank you message */}
+            <AnimatePresence>
+              {showThankYou && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl text-center z-10"
+                >
+                  <FaHeart className="w-12 h-12 text-pink-500 mx-auto mb-4 animate-pulse" />
+                  <p className="text-xl font-medium text-gray-800 dark:text-white">
+                    Thank you for your review!
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+          {/* Reviews Display */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative"
+          >
+            <div className="space-y-6 h-[600px] overflow-y-auto pr-4 custom-scrollbar">
+              {reviews.length === 0 ? (
+                <div className="text-center text-gray-500 dark:text-gray-400 py-12">
+                  <p className="text-lg">No reviews yet. Be the first to share your thoughts!</p>
+                </div>
+              ) : (
+                reviews
+                  .slice((currentPage - 1) * reviewsPerPage, currentPage * reviewsPerPage)
+                  .map((review) => (
+                    <motion.div
+                      key={review.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg relative group hover:shadow-xl transition-shadow duration-200"
+                    >
+                      <div className="absolute top-4 right-4 flex">
+                        {[...Array(review.rating)].map((_, i) => (
+                          <FaStar key={i} className="w-5 h-5 text-yellow-400" />
+                        ))}
+                      </div>
+                      <FaQuoteLeft className="w-6 h-6 text-purple-500 opacity-50 mb-2" />
+                      <p className="text-gray-700 dark:text-gray-300 mb-4">{review.comment}</p>
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-gray-900 dark:text-white">{review.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {new Date(review.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <FaQuoteRight className="w-6 h-6 text-purple-500 opacity-50 absolute bottom-4 right-4" />
+                    </motion.div>
+                  ))
+              )}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-6 gap-2">
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 ${
+                      currentPage === i + 1
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-purple-200 dark:hover:bg-purple-900'
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        playfair: ['Playfair Display', 'serif'],
+        'orbitron': ['Orbitron', 'sans-serif'],
+        'quicksand': ['Quicksand', 'sans-serif'],
       },
       colors: {
         cream: {
@@ -88,13 +89,16 @@ module.exports = {
       animation: {
         'gradient-x': 'gradient-x 15s ease infinite',
         'gradient-y': 'gradient-y 15s ease infinite',
-        'gradient-xy': 'gradient 10s ease infinite',
+        'gradient-xy': 'gradient-xy 3s ease infinite',
         'spin-slow': 'spin 15s linear infinite',
         'spin-reverse-slow': 'spin-reverse 15s linear infinite',
-        'float': 'float 6s ease-in-out infinite',
+        'float': 'float 3s ease-in-out infinite',
         'blob': 'blob 7s infinite',
         'bounce': 'bounce 1s infinite',
+        'firework': 'firework 1s ease-out forwards',
+        'sparkle': 'sparkle 1s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         'gradient-y': {
@@ -142,13 +146,9 @@ module.exports = {
             'transform': 'rotate(-360deg)'
           }
         },
-        'float': {
-          '0%, 100%': {
-            transform: 'translateY(0)',
-          },
-          '50%': {
-            transform: 'translateY(-20px)',
-          }
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
         },
         'blob': {
           '0%': {
@@ -160,6 +160,15 @@ module.exports = {
           '100%': {
             borderRadius: '69% 31% 61% 39% / 47% 52% 48% 53%',
           }
+        },
+        'firework': {
+          '0%': { transform: 'scale(0)', opacity: 1 },
+          '50%': { transform: 'scale(1)', opacity: 0.8 },
+          '100%': { transform: 'scale(1.2)', opacity: 0 }
+        },
+        'sparkle': {
+          '0%, 100%': { transform: 'scale(1)', opacity: 1 },
+          '50%': { transform: 'scale(1.2)', opacity: 0.5 }
         },
         'pulse-glow': {
           '0%, 100%': {

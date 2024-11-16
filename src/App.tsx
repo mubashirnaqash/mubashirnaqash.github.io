@@ -1,52 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-scroll';
+import { 
+  FaUserAstronaut, FaUser, FaBriefcase, FaCode, 
+  FaComments, FaEnvelope, FaMoon, FaSun 
+} from 'react-icons/fa';
 import About from './components/About';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
+import Reviews from './components/Reviews';
 import Contact from './components/Contact';
+import Footer from './components/Footer';
+import AnalogClock from './components/AnalogClock';
+import WelcomeSection from './components/WelcomeSection';
+import Fireworks from './components/Fireworks';
+import PartyPopper from './components/PartyPopper';
 import ScrollArrows from './components/ScrollArrows';
-import BackgroundStars from './components/BackgroundStars';
-import MFLogo from './components/MFLogo';
-import FloatingKeywords from './components/FloatingKeywords';
-import { FaMoon, FaSun, FaUser, FaBriefcase, FaCode, FaEnvelope, FaUserAstronaut, FaRobot } from 'react-icons/fa';
-import './styles/scroll.css';
-import './styles/animations.css';
-import { useIntersectionObserver } from './hooks/useIntersectionObserver';
+import IntroSection from './components/IntroSection';
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
-  const [activeSection, setActiveSection] = useState('about');
-  const [headlineIndex, setHeadlineIndex] = useState(0);
-  
-  const { observerRef } = useIntersectionObserver({
-    onSectionChange: setActiveSection,
-    threshold: 0.5,
-    rootMargin: '-100px 0px -100px 0px'
-  });
-
-  const headlines = [
-    "Exploring the Frontiers of AI",
-    "Innovating Healthcare with ML",
-    "Advancing Research in Deep Learning",
-    "Building the Future of Technology"
-  ];
+  const [currentSection, setCurrentSection] = useState('welcome');
+  const [showFireworks, setShowFireworks] = useState(true);
+  const hasShownFireworks = useRef(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
+    localStorage.setItem('darkMode', darkMode.toString());
   }, [darkMode]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeadlineIndex((prev) => (prev + 1) % headlines.length);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [headlines.length]);
+    const storedDarkMode = localStorage.getItem('darkMode');
+    if (storedDarkMode !== null) {
+      setDarkMode(storedDarkMode === 'true');
+    }
+  }, []);
 
-  const navItems = [
+  useEffect(() => {
+    setTimeout(() => {
+      setShowFireworks(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('section[id]');
+      const scrollY = window.pageYOffset;
+
+      sections.forEach((current) => {
+        const sectionHeight = (current as HTMLElement).offsetHeight;
+        const sectionTop = (current as HTMLElement).offsetTop - 50;
+        const sectionId = current.getAttribute('id');
+
+        if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+          if (['welcome', 'about', 'experience', 'projects', 'reviews', 'contact'].includes(sectionId || '')) {
+            setCurrentSection(sectionId || '');
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navigationItems = [
+    {
+      id: 'welcome',
+      label: 'Home',
+      icon: <FaUserAstronaut className="text-2xl group-hover:text-gradient-start" />
+    },
     {
       id: 'about',
       label: 'About',
-      icon: <FaUserAstronaut className="text-2xl group-hover:text-gradient-start" />
+      icon: <FaUser className="text-2xl group-hover:text-gradient-start" />
     },
     {
       id: 'experience',
@@ -56,7 +83,12 @@ function App() {
     {
       id: 'projects',
       label: 'Projects',
-      icon: <FaRobot className="text-2xl group-hover:text-gradient-start" />
+      icon: <FaCode className="text-2xl group-hover:text-gradient-start" />
+    },
+    {
+      id: 'reviews',
+      label: 'Reviews',
+      icon: <FaComments className="text-2xl group-hover:text-gradient-start" />
     },
     {
       id: 'contact',
@@ -65,374 +97,101 @@ function App() {
     }
   ];
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
-    e.preventDefault();
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(sectionId);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200 font-playfair">
-      <BackgroundStars />
-      <FloatingKeywords />
-      
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <MFLogo />
+    <div className={darkMode ? 'dark' : ''}>
+      <div className="min-h-screen bg-cream-50 dark:bg-gray-900 text-gray-900 dark:text-white relative">
+        {/* Party Poppers */}
+        <PartyPopper position="top-left" interval={2500} size="small" />
+        <PartyPopper position="top-right" interval={3000} size="small" />
+        <PartyPopper position="bottom-left" interval={2700} size="small" />
+        <PartyPopper position="bottom-right" interval={3200} size="small" />
 
-            <div className="flex items-center space-x-8">
-              {/* Theme Toggle */}
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className="p-2 text-gray-600 dark:text-gray-300 hover:text-gradient-start dark:hover:text-gradient-start transition-colors duration-200"
-                aria-label="Toggle dark mode"
-              >
-                {darkMode ? <FaSun className="text-2xl" /> : <FaMoon className="text-2xl" />}
-              </button>
+        {/* Fireworks */}
+        {showFireworks && <Fireworks />}
 
-              {/* Navigation Items */}
-              <div className="flex space-x-6">
-                {navItems.map((item) => (
-                  <motion.a
+        {/* Theme Toggle */}
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="fixed top-4 right-4 z-50 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
+        >
+          {darkMode ? (
+            <FaSun className="text-yellow-400 w-6 h-6" />
+          ) : (
+            <FaMoon className="text-gray-600 w-6 h-6" />
+          )}
+        </button>
+
+        {/* Navigation */}
+        <nav className="fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex-shrink-0">
+                <AnalogClock />
+              </div>
+              <div className="hidden md:flex space-x-8">
+                {navigationItems.map((item) => (
+                  <Link
                     key={item.id}
-                    href={`#${item.id}`}
-                    onClick={(e) => handleNavClick(e, item.id)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`group flex items-center space-x-2 text-base font-medium transition-colors duration-200
-                      ${activeSection === item.id
-                        ? 'text-gradient-start'
-                        : 'text-gray-600 dark:text-gray-300 hover:text-gradient-start dark:hover:text-gradient-start'
-                      }`}
+                    to={item.id}
+                    spy={true}
+                    smooth={true}
+                    offset={0}
+                    duration={500}
+                    className={`group flex items-center space-x-2 cursor-pointer
+                      ${currentSection === item.id ? 'text-gradient-start' : 'text-gray-600 dark:text-gray-300'}
+                      hover:text-gradient-start transition-colors duration-300`}
                   >
                     {item.icon}
-                    <span className="font-playfair">{item.label}</span>
-                  </motion.a>
+                    <span>{item.label}</span>
+                  </Link>
                 ))}
               </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Hero Section with Animated Headlines */}
-      <header className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center space-y-12"
-          >
-            {/* Animated Headline */}
-            <motion.div
-              key={headlineIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="mb-8"
-            >
-              <motion.h2 
-                className="text-4xl md:text-5xl font-bold font-playfair relative"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                <motion.span
-                  className="bg-gradient-to-r from-[#FF3366] via-[#FF6B6B] to-[#4ECDC4] inline-block"
-                  style={{
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundSize: '200% 100%'
-                  }}
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                  }}
-                  transition={{
-                    duration: 5,
-                    ease: 'linear',
-                    repeat: Infinity
-                  }}
-                >
-                  {headlines[headlineIndex]}
-                </motion.span>
-              </motion.h2>
-            </motion.div>
+        {/* Main Content */}
+        <main className="relative">
+          {/* Welcome Section */}
+          <section id="welcome" className="relative min-h-screen">
+            <WelcomeSection />
+          </section>
 
-            <motion.h1 
-              className="text-5xl md:text-7xl font-bold font-playfair relative"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <motion.span 
-                className="relative inline-block"
-                animate={{
-                  scale: [1, 1.05, 1],
-                  y: [0, -5, 0],
-                  textShadow: [
-                    '0 0 20px rgba(56,189,248,0.5)',
-                    '0 0 40px rgba(232,121,249,0.4)',
-                    '0 0 20px rgba(56,189,248,0.5)'
-                  ]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                  ease: "easeInOut"
-                }}
-              >
-                {/* Gradient background with animation */}
-                <motion.span 
-                  className="absolute inset-0 bg-gradient-to-r from-[#38BDF8] via-[#E879F9] to-[#38BDF8] opacity-75 blur-lg"
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                />
-                
-                {/* Main text with gradient */}
-                <motion.span 
-                  className="relative bg-gradient-to-r from-[#38BDF8] via-[#E879F9] to-[#38BDF8] bg-clip-text text-transparent"
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                >
-                  AI Researcher
-                </motion.span>
+          {/* Intro Section */}
+          <section className="relative min-h-screen">
+            <IntroSection />
+          </section>
 
-                {/* Sparkle effects */}
-                <motion.span 
-                  className="absolute -inset-2 bg-gradient-to-r from-[#38BDF8] via-transparent to-[#E879F9] opacity-30 blur-xl"
-                  animate={{
-                    rotate: [0, 360],
-                    scale: [1, 1.2, 1]
-                  }}
-                  transition={{
-                    rotate: {
-                      duration: 10,
-                      repeat: Infinity,
-                      ease: "linear"
-                    },
-                    scale: {
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    }
-                  }}
-                />
-              </motion.span>
+          {/* About Section */}
+          <section id="about" className="relative min-h-screen pt-16">
+            <About />
+          </section>
 
-              <motion.span 
-                className="relative inline-block mx-4 text-transparent bg-gradient-to-r from-[#38BDF8] to-[#E879F9] bg-clip-text"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 5, 0]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-              >
-                &
-              </motion.span>
+          {/* Experience Section */}
+          <section id="experience" className="relative min-h-screen py-20">
+            <Experience />
+          </section>
 
-              <motion.span 
-                className="relative inline-block"
-                animate={{
-                  scale: [1, 1.05, 1],
-                  y: [0, -5, 0],
-                  textShadow: [
-                    '0 0 20px rgba(232,121,249,0.5)',
-                    '0 0 40px rgba(56,189,248,0.4)',
-                    '0 0 20px rgba(232,121,249,0.5)'
-                  ]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                  ease: "easeInOut",
-                  delay: 0.5
-                }}
-              >
-                {/* Gradient background with animation */}
-                <motion.span 
-                  className="absolute inset-0 bg-gradient-to-r from-[#E879F9] via-[#38BDF8] to-[#E879F9] opacity-75 blur-lg"
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                />
-                
-                {/* Main text with gradient */}
-                <motion.span 
-                  className="relative bg-gradient-to-r from-[#E879F9] via-[#38BDF8] to-[#E879F9] bg-clip-text text-transparent"
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                >
-                  Developer
-                </motion.span>
+          {/* Projects Section */}
+          <section id="projects" className="relative min-h-screen py-20">
+            <Projects />
+          </section>
 
-                {/* Sparkle effects */}
-                <motion.span 
-                  className="absolute -inset-2 bg-gradient-to-r from-[#E879F9] via-transparent to-[#38BDF8] opacity-30 blur-xl"
-                  animate={{
-                    rotate: [0, -360],
-                    scale: [1, 1.2, 1]
-                  }}
-                  transition={{
-                    rotate: {
-                      duration: 10,
-                      repeat: Infinity,
-                      ease: "linear"
-                    },
-                    scale: {
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                      delay: 0.5
-                    }
-                  }}
-                />
-              </motion.span>
-            </motion.h1>
+          {/* Reviews Section */}
+          <section id="reviews" className="relative min-h-screen py-20">
+            <Reviews />
+          </section>
 
-            <div className="flex justify-center space-x-6">
-              <motion.a
-                href="#contact"
-                onClick={(e) => handleNavClick(e, 'contact')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative group"
-              >
-                {/* Gradient background with glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#EC4899] rounded-lg opacity-75 group-hover:opacity-100 blur animate-gradient-xy"></div>
-                
-                {/* Button content */}
-                <div className="relative px-8 py-4 bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#EC4899] text-white rounded-lg shadow-lg group-hover:shadow-xl transition-all duration-200 text-lg">
-                  Get in Touch
-                </div>
+          {/* Contact Section */}
+          <section id="contact" className="relative min-h-screen py-20">
+            <Contact />
+          </section>
+        </main>
 
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#EC4899] rounded-lg opacity-50 group-hover:opacity-75 blur-xl transition-opacity"></div>
-              </motion.a>
-
-              <motion.a
-                href="#projects"
-                onClick={(e) => handleNavClick(e, 'projects')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative group"
-              >
-                {/* Gradient background with glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#EC4899] via-[#7C3AED] to-[#4F46E5] rounded-lg opacity-75 group-hover:opacity-100 blur animate-gradient-xy"></div>
-                
-                {/* Button content */}
-                <div className="relative px-8 py-4 bg-gradient-to-r from-[#EC4899] via-[#7C3AED] to-[#4F46E5] text-white rounded-lg shadow-lg group-hover:shadow-xl transition-all duration-200 text-lg">
-                  View Projects
-                </div>
-
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#EC4899] via-[#7C3AED] to-[#4F46E5] rounded-lg opacity-50 group-hover:opacity-75 blur-xl transition-opacity"></div>
-              </motion.a>
-            </div>
-          </motion.div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main ref={observerRef}>
-        <section id="about" className="py-20">
-          <About />
-        </section>
-        <section id="experience" className="py-20">
-          <Experience />
-        </section>
-        <section id="projects" className="py-20">
-          <Projects />
-        </section>
-        <section id="contact" className="py-20">
-          <Contact />
-        </section>
-      </main>
-
-      {/* Scroll Arrows */}
-      <ScrollArrows />
-
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-gray-600 dark:text-gray-300 font-playfair">
-              &copy; {new Date().getFullYear()} Mubashir Farooq. All rights reserved.
-            </p>
-            <motion.p 
-              className="flex items-center justify-center mt-2 text-gray-500 dark:text-gray-400 font-playfair"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              Made with{' '}
-              <motion.span
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  color: ['#FF6B6B', '#FF4D4D', '#FF6B6B']
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-                className="mx-1"
-              >
-                &hearts;
-              </motion.span>
-              {' '}by Mubashir Farooq
-            </motion.p>
-          </div>
-        </div>
-      </footer>
+        {/* Background Effects */}
+        <ScrollArrows />
+        <Footer />
+      </div>
     </div>
   );
 }

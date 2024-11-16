@@ -79,7 +79,7 @@ const BackgroundStars: React.FC<BackgroundStarsProps> = ({
         >
           <Star 
             size={star.size} 
-            className={`${star.color} opacity-40`} 
+            className={`${star.color} opacity-40`}
           />
         </div>
       ))}
@@ -87,12 +87,13 @@ const BackgroundStars: React.FC<BackgroundStarsProps> = ({
   );
 };
 
-export const SectionStars: React.FC<{ density?: 'low' | 'medium' | 'high' }> = ({ density = 'low' }) => (
+const SectionStars = ({ density = 'low' }: { density?: 'low' | 'medium' | 'high' }) => (
   <BackgroundStars density={density} className="absolute inset-0 z-0" />
 );
 
-export const HeadlineStars: React.FC = () => (
+const HeadlineStars = () => (
   <BackgroundStars density="high" className="absolute inset-0 z-0" />
 );
 
+export { Star, SectionStars, HeadlineStars };
 export default BackgroundStars;
